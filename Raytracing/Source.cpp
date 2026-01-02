@@ -9,8 +9,12 @@ int main()
 	// Render
     std::cout << "P3\n" << imageWidth << ' ' << imageHeight << "\n255\n";
 
-    for (int j = 0; j < imageHeight; j++)
+    for (int j = 0; j < imageHeight; ++j)
     {
+        // progress indicator
+        std::clog << "\rScanlines remaining: " << (imageHeight - j) << ' ' << std::flush;
+
+        // image data
         for (int i = 0; i < imageWidth; i++)
         {
             auto r = double(i) / (imageWidth - 1);
@@ -24,6 +28,7 @@ int main()
             std::cout << ir << ' ' << ig << ' ' << ib << '\n';
         }
     }
+
 
 
 	return 0;
