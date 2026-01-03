@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <iostream>
+#include "interval.h"
 #include <limits>
 #include <memory>
 
