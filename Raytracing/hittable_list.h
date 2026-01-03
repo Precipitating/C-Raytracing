@@ -1,8 +1,7 @@
 #pragma once
 #include "hittable.h"
-
-#include <memory>
 #include <vector>
+#include "rtweekend.h"
 
 using std::make_shared;
 using std::shared_ptr;

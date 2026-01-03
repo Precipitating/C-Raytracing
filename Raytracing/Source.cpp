@@ -1,7 +1,7 @@
-#include <iostream>
-#include "color.h"
-#include "vec3.h"
-#include "ray.h"
+#include "rtweekend.h"
+#include "hittable.h"
+#include "hittable_list.h"
+#include "sphere.h"
 
 double hit_sphere(const point3& center, double radius, const ray& r)
 {
@@ -20,23 +20,15 @@ double hit_sphere(const point3& center, double radius, const ray& r)
     }
 }
 
-color ray_color(const ray& r)
+color ray_color(const ray& r, const hittable& world)
 {
-    // how far along the ray the hit occurs
-    auto t = hit_sphere(point3(0, 0, -1), 0.5, r);
-
-    // sphere hit if t > 0
-    if (t > 0.0)
-    {
-        vec3 N = unit_vector(r.at(t) - vec3(0, 0, -1));
-
-        // sky gradient
-        return 0.5 * color(N.x() + 1, N.y() + 1, N.z() + 1);
+    hit_record rec;
+    if (world.hit(r, 0, infinity, rec)) {
+        return 0.5 * (rec.normal + color(1, 1, 1));
     }
 
-    vec3 unitDirection = unit_vector(r.direction());
-    auto a = 0.5 * (unitDirection.y() + 1.0);
-    // lerp formula
+    vec3 unit_direction = unit_vector(r.direction());
+    auto a = 0.5 * (unit_direction.y() + 1.0);
     return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
 }
 
@@ -50,6 +42,12 @@ int main()
     // Calculate the image height, and ensure that it's at least 1.
     int imageHeight = int(imageWidth / aspect_ratio);
     imageHeight = (imageHeight < 1) ? 1 : imageHeight;
+
+    // World
+    hittable_list world;
+    world.add(make_shared<sphere>(point3(0, 0, -1), 0.5));
+    world.add(make_shared<sphere>(point3(0, -100.5, -1), 100));
+
 
     // Camera
     auto focalLength = 1.0;
@@ -85,7 +83,7 @@ int main()
             auto rayDirection = pixelCenter - cameraCenter;
             ray r(cameraCenter, rayDirection);
 
-            color pixelColor = ray_color(r);
+            color pixelColor = ray_color(r, world);
             write_color(std::cout, pixelColor);
         }
     }
