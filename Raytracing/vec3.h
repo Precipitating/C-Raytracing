@@ -1,6 +1,6 @@
 #pragma once
-#include "rtweekend.h"
-class vec3 {
+class vec3
+{
 public:
     double e[3];
 
